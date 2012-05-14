@@ -1,0 +1,30 @@
+Assignment for lesson 6 of PL101 at http://www.nathansuniversity.com/.
+
+Tortoise interpreter with lots of goodies:
+
+* if (<cond>) <if_true> else <if_false>;
+* return <optional_expr>;
+* ternary inline-if operator: <cond> ? <if_true> : <if_false>
+* ternary "chained" comparison operators: x < y < z is equivalent to
+  x < y && y < z, but y is evaluated only once. Valid for all comparison
+  operators except != ==
+* short-circuit boolean operators: && ||, && returns the right operand if
+  the left operand is nonzero, else zero; || returns the left operand unless
+  it's zero, and it's right operand if the left one is zero.
+* unary operators: + - ! (boolean not)
+* modulus operator: %
+* power operator <base> ** <exp> (right-associative)
+* alternate numeric format: #rrggbb or #rgb. Useful to set the color
+  of the pen through the pen_color function.
+* turtle functions: forward, left, right, set_heading, home, clear, pen_up,
+  pen_down, set_color.
+* math functions: abs, ceil, floor, round, log, exp, sqrt, pow, min, max,
+  sin, cos, tan, asin, acos, atan, atan2
+* C-like assign operators: += -= *= /= %= **= ||= &&=
+* optimized parser using not-predicates (the sample was too slow)
+* corrected associativity of additive and multiplicative operators (they are
+  left-associative, and in the sample they are right-associative)
+* C-like convention regarding truth values: zero is false, anything else is
+  true. The boolean not operator converts 0 to 1, and nonzero to 0.
+* declaration and initialization through the extended syntax: var <id> := <expr>;
+* custom CodeMirror-based syntax highlighter for Tortoise.
