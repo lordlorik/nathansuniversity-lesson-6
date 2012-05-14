@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Nathansuniversity-lesson-6 : " />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Nathansuniversity-lesson-6</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/lordlorik/nathansuniversity-lesson-6">View on GitHub</a>
+
+          <h1 id="project_title">Nathansuniversity-lesson-6</h1>
+          <h2 id="project_tagline"></h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/lordlorik/nathansuniversity-lesson-6/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/lordlorik/nathansuniversity-lesson-6/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>Assignment for lesson 6 of PL101 at <a href="http://www.nathansuniversity.com/">http://www.nathansuniversity.com/</a>.</p>
+
+<p>Tortoise interpreter with lots of goodies:</p>
+
+<ul>
+<li>if (<em>&lt;cond&gt;</em>) <em>&lt;if_true&gt;</em> else <em>&lt;if_false&gt;</em>;</li>
+<li>return <em>&lt;optional_expr&gt;</em>;</li>
+<li>ternary inline-if operator: <em>&lt;cond&gt;</em> ? <em>&lt;if_true&gt;</em> : <em>&lt;if_false&gt;</em>
+</li>
+<li>ternary "chained" comparison operators: <em>x</em> &lt; <em>y</em> &lt; <em>z</em> is equivalent to
+<em>x</em> &lt; <em>y</em> &amp;&amp; <em>y</em> &lt; <em>z</em>, but <em>y</em> is evaluated only once. Valid for all comparison
+operators except <em>!=</em> ==</li>
+<li>short-circuit boolean operators: &amp;&amp; ||, &amp;&amp; returns the right operand if
+the left operand is nonzero, else zero; || returns the left operand unless
+it's zero, and it's right operand if the left one is zero.</li>
+<li>unary operators: + - ! (boolean not)</li>
+<li>modulus operator: %</li>
+<li>power operator <em>&lt;base&gt;</em> ** <em>&lt;exp&gt;</em> (right-associative)</li>
+<li>alternate numeric format: #<em>rrggbb</em> or #<em>rgb</em>. Useful to set the color
+of the pen through the pen_color function.</li>
+<li>turtle functions: forward, left, right, set_heading, home, clear, pen_up,
+pen_down, set_color.</li>
+<li>math functions: abs, ceil, floor, round, log, exp, sqrt, pow, min, max,
+sin, cos, tan, asin, acos, atan, atan2</li>
+<li>C-like assign operators: += -= <em>= /= %= *</em>= ||= &amp;&amp;=</li>
+<li>optimized parser using not-predicates (the sample was too slow)</li>
+<li>corrected associativity of additive and multiplicative operators (they are
+left-associative, and in the sample they are right-associative)</li>
+<li>C-like convention regarding truth values: zero is false, anything else is
+true. The boolean not operator converts 0 to 1, and nonzero to 0.</li>
+<li>declaration and initialization through the extended syntax: var <em>&lt;id&gt;</em> := <em>&lt;expr&gt;</em>;</li>
+<li>custom CodeMirror-based syntax highlighter for Tortoise.</li>
+</ul>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Nathansuniversity-lesson-6 maintained by <a href="https://github.com/lordlorik">lordlorik</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
