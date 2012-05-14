@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Tortoise Live Demo by Lord Lorik</title>
+    <link rel="stylesheet" href="codemirror/codemirror.css">
+    <link rel="stylesheet" href="codemirror/blackboard.css">
+    <script src="http://nathansuniversity.com/js/jquery-1.7.1.min.js"></script>
+    <script src="codemirror/codemirror.js"></script>
+    <script src="codemirror/tortoise.js"></script>
+    <script src="http://nathansuniversity.com/js/raphael-min.js"></script>
+    <script src="javascripts/turtle.js"></script>
+    <script src="javascripts/parser.js"></script>
+    <script src="javascripts/tortoise.js"></script>
+    <style>
+    table, tr, td { border: 0; }
+    table { width: 100%; }
+    #editor { border: 2px solid #555; border-radius: 3px; min-width: 90%; max-width: 1000px; float: left; position: relative; }
+    #buttons { float: left; position: relative; clear: right; }
+    #buttons input { width: 5em; margin-left: 1em; }
+    #turtlecanvas { width: 45%; height: 500px; background-color: #eee; float: left; border: 1px solid #000; }
+    #console { padding: 0 1em; margin-left: 1em; border: solid 1px; border-radius: 5px; font-family: Consolas, Courier New, monospace; width: 50%; height: 500px; float: left; clear: right; overflow: auto; }
+	#turtlecanvas, #console { margin-top: 1em; }
+    </style>
+</head>
+<body>
+
+<div id="editor">
+<textarea id="input" style="width: 100%; height: 300px;">
+define polygon (sides, radius, color) {
+    var angle := 360 / sides;
+    var side := 2 * radius * sin(180 / sides);
+    var initial_angle := 180 - (180 - angle) / 2;
+
+    home();
+    set_heading(90);
+    set_color(color);
+    pen_up();
+    forward(radius);
+    pen_down();
+    right(initial_angle);
+    repeat (sides) {
+        forward(side);
+        right(angle);
+    }
+    return side;
+}
+
+var radius := 200;
+
+clear();
+polygon(8, radius, #a00);
+polygon(7, radius, #0a0);
+polygon(6, radius, #00a);
+polygon(5, radius, #aa0);
+polygon(4, radius, #0aa);
+polygon(3, radius, #a0a);
+
+home();
+set_heading(90);
+</textarea>
+</div>
+<div id="buttons">
+    <input id="runButton" type="button" value="Run" /><br />
+    <input id="clearButton" type="button" value="Clear" />
+</div>
+<div id="turtlecanvas"></div>
+<div id="console"></div>
+
+<script>
+    var log = function(msg) {
+        $('#console').append('<p>' + msg + '</p>');
+    };
+
+    // After page load
+    $(function() {
+        var myCodeMirror = CodeMirror.fromTextArea($('#input').get(0), {
+            mode: 'tortoise',
+            theme: 'blackboard',
+            lineNumbers: true
+        });
+
+        var myTurtle = new Turtle("turtlecanvas");
+        var radToDeg = Math.PI / 180;
+
+        tortoise.addBinding('sin', function (a) { return Math.sin(a * radToDeg); });
+        tortoise.addBinding('cos', function (a) { return Math.cos(a * radToDeg); });
+        tortoise.addBinding('tan', function (a) { return Math.tan(a * radToDeg); });
+        tortoise.addBinding('asin', function (n) { return Math.asin(n) / radToDeg; });
+        tortoise.addBinding('acos', function (n) { return Math.acos(n) / radToDeg; });
+        tortoise.addBinding('atan', function (n) { return Math.atan(n) * radToDeg; });
+        tortoise.addBinding('atan2', function (x, y) { return Math.atan2(x, y) * radToDeg; });
+
+        tortoise.addBinding('abs', Math.abs);
+        tortoise.addBinding('ceil', Math.ceil);
+        tortoise.addBinding('floor', Math.floor);
+        tortoise.addBinding('round', Math.round);
+        tortoise.addBinding('log', Math.log);
+        tortoise.addBinding('exp', Math.exp);
+        tortoise.addBinding('sqrt', Math.sqrt);
+        tortoise.addBinding('pow', Math.pow);
+        tortoise.addBinding('min', Math.min);
+        tortoise.addBinding('max', Math.max);
+
+        tortoise.addBinding('forward', function (d) { myTurtle.forward(d); });
+        tortoise.addBinding('left', function (a) { myTurtle.left(a); });
+        tortoise.addBinding('right', function (a) { myTurtle.right(a); });
+        tortoise.addBinding('set_heading', function (h) { myTurtle.setHeading(h); });
+        tortoise.addBinding('home', function () { myTurtle.home(); });
+        tortoise.addBinding('clear', function () { myTurtle.clear(); });
+        tortoise.addBinding('pen_up', function () { myTurtle.penup(); });
+        tortoise.addBinding('pen_down', function () { myTurtle.pendown(); });
+        tortoise.addBinding('set_color', function (c) { myTurtle.setColor((c >> 16) & 255, (c >> 8) & 255, c & 255); });
+
+        $('#runButton').click(function() {
+            var input = myCodeMirror.getValue();
+
+            log(input);
+            try {
+                var parsed = tortoiseParser.parse(input);
+
+                log('<< PARSED ' + JSON.stringify(parsed) + ' >>');
+                try {
+                    var result = tortoise.evalTortoise(parsed);
+
+                    log('> ' + JSON.stringify(result));
+                }
+                catch (e) {
+                    log('> ERROR ' + e);
+                }
+            }
+            catch (e) {
+                log('> ERROR ' + e);
+            }
+        });
+        $('#clearButton').click(function() {
+            $('#console').html('');
+            myTurtle.clear();
+            log('WELCOME!');
+        }).click();
+    });
+</script>
+</body>
+</html>
