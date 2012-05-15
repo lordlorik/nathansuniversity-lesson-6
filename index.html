@@ -36,32 +36,40 @@
 <p>Tortoise interpreter with lots of goodies:</p>
 
 <ul>
-<li><b>if (</b><em>&lt;cond&gt;</em><b>)</b> <em>&lt;if_true&gt;</em> <b>else</b> <em>&lt;if_false&gt;</em><b>;</b></li>
-<li>return</b> <em>&lt;optional_expr&gt;</em>;</b></li>
-<li>ternary inline-if operator: <em>&lt;cond&gt;</em> <b>?</b> <em>&lt;if_true&gt;</em> <b>:</b> <em>&lt;if_false&gt;</em>
+<li>if (<em>&lt;cond&gt;</em>) <em>&lt;if_true&gt;</em> else <em>&lt;if_false&gt;</em>;</li>
+<li>while (<em>&lt;cond&gt;</em>) <em>&lt;block&gt;</em>;</li>
+<li>return <em>&lt;optional_expr&gt;</em>;</li>
+<li>numbers can have exponent, so now <em>31.41592e-1</em> is a valid format for numbers</li>
+<li>ternary inline-if operator: <em>&lt;cond&gt;</em> ? <em>&lt;if_true&gt;</em> : <em>&lt;if_false&gt;</em>
 </li>
-<li>ternary "chained" comparison operators: <em>x</em> <b>&lt;</b> <em>y</em> <b>&lt;</b> <em>z</em> is equivalent to
-<em>x</em> <b>&lt;</b> <em>y</em> <b>&amp;&amp;</b> <em>y</em> <b>&lt;</b> <em>z</em>, but <em>y</em> is evaluated only once. Valid for all comparison
-operators except <em><b>!=</b></em> <b>==</b></li>
-<li>short-circuit boolean operators: <b>&amp;&amp;</b> <b>||</b>, <b>&amp;&amp;</b> returns the right operand if
-the left operand is nonzero, else zero; <b>||</b> returns the left operand unless
+<li>ternary "chained" comparison operators: <em>x</em> &lt; <em>y</em> &lt; <em>z</em> is equivalent to
+<em>x</em> &lt; <em>y</em> &amp;&amp; <em>y</em> &lt; <em>z</em>, but <em>y</em> is evaluated only once. Valid for all comparison
+operators except <em>!=</em> ==</li>
+<li>short-circuit boolean operators: &amp;&amp; ||, &amp;&amp; returns the right operand if
+the left operand is nonzero, else zero; || returns the left operand unless
 it's zero, and it's right operand if the left one is zero.</li>
-<li>unary operators: <b>+ - !</b> (boolean not)</li>
-<li>modulus operator: <b>%</b></li>
-<li>power operator <em>&lt;base&gt;</em> <b>**</b> <em>&lt;exp&gt;</em> (right-associative)</li>
-<li>alternate numeric format: <b>#</b><em>rrggbb</em> or <b>#</b><em>rgb</em>. Useful to set the color
-of the pen through the <b>pen_color</b> function.</li>
-<li>turtle functions: <b>forward</b>, <b>left</b>, <b>right</b>, <b>set_heading</b>, <b>home</b>, <b>clear</b>, <b>pen_up</b>,
-<b>pen_down</b>, <b>set_color</b>.</li>
-<li>math functions: <b>abs</b>, <b>ceil</b>, <b>floor</b>, <b>round</b>, <b>log</b>, <b>exp</b>, <b>sqrt</b>, <b>pow</b>, <b>min</b>, <b>max</b>,
-<b>sin</b>, <b>cos</b>, <b>tan</b>, <b>asin</b>, <b>acos</b>, <b>atan</b>, <b>atan2</b></li>
-<li>C-like assign operators: <b>+=</b> <b>-=</b> <b>*=</b> <b>/=</b> <b>%=</b> <b>**=</b> <b>||=</b> <b>&amp;&amp;=</b></li>
-<li>optimized parser using not-predicates (the sample was too slow)</li>
+<li>unary operators: + - ! (boolean not)</li>
+<li>modulus operator: %</li>
+<li>power operator <em>&lt;base&gt;</em> ** <em>&lt;exp&gt;</em> (right-associative)</li>
+<li>alternate numeric format: #<em>rrggbb</em> or #<em>rgb</em>. Useful to set the color
+of the pen through the pen_color function.</li>
+<li>C-like single line comments: // <em>comment</em></li>
+<li>turtle functions: forward, backward, left, right, set_heading, get_heading,
+set_position, get_position_x, get_position_y, home, clear, pen_up, pen_down,
+is_pen_down, set_ink, get_ink, set_paper, get_paper, set_pen_width,
+get_pen_width, set_pen_opacity, get_pen_opacity.</li>
+<li>math functions: abs, ceil, floor, round, log, exp, sqrt, pow, min, max,
+sin, cos, tan, asin, acos, atan, atan2 (trig functions work with degrees)</li>
+<li>C-like assign operators: += -= *= /= %= **= ||= &amp;&amp;=</li>
+<li>optimized my parser using not-predicates to prevent excessive backtracking
+(the sample was too slow)</li>
 <li>corrected associativity of additive and multiplicative operators (they are
 left-associative, and in the sample they are right-associative)</li>
 <li>C-like convention regarding truth values: zero is false, anything else is
 true. The boolean not operator converts 0 to 1, and nonzero to 0.</li>
-<li>declaration and initialization through the extended syntax: <b>var</b> <em>&lt;id&gt;</em> <b>:=</b> <em>&lt;expr&gt;</em><b>;</b></li>
+<li>declaration and initialization through the extended syntax: var <em>&lt;id&gt;</em> := <em>&lt;expr&gt;</em>;</li>
+<li>constant declaration similar to var declaration with initialization, which
+is mandatory for constants: const <em>&lt;id&gt;</em> := <em>&lt;expr&gt;</em>;</li>
 <li>custom CodeMirror-based syntax highlighter for Tortoise.</li>
 </ul>
 <a href="repl.html" target="_blank">Interpreter</a> || Tests (WIP) || <a href="https://github.com/lordlorik/nathansuniversity-lesson-6" target="_blank">Source</a>
