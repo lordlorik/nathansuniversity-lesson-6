@@ -1,13 +1,13 @@
-CodeMirror.defineMode("tortoise", function(config, parserConfig) {
+CodeMirror.defineMode('tortoise', function(config, parserConfig) {
   function words(str) {
-    var obj = {}, words = str.split(" ");
+    var obj = {}, words = str.split(' ');
     for (var i = 0; i < words.length; ++i) obj[words[i]] = true;
     return obj;
   };
 
   var indentUnit = config.indentUnit,
-      keywords = words("define var if else repeat return"),
-      blockKeywords = words("if define"),
+      keywords = words('define var const if else while repeat return'),
+      blockKeywords = words('define if while'),
       atoms = {},
       hooks = {},
       multiLineStrings = parserConfig.multiLineStrings,
@@ -31,34 +31,30 @@ CodeMirror.defineMode("tortoise", function(config, parserConfig) {
     }
     if (/\d/.test(ch)) {
       stream.eatWhile(/[\w\.]/);
-      return "number";
+      return 'number';
     }
-    if (ch == "#") {
+    if (ch == '#') {
       stream.eatWhile(/[a-fA-F0-9]/);
-      return "number";
+      return 'number';
     }
-    if (ch == "/") {
-      if (stream.eat("*")) {
-        state.tokenize = tokenComment;
-        return tokenComment(stream, state);
-      }
-      if (stream.eat("/")) {
+    if (ch == '/') {
+      if (stream.eat('/')) {
         stream.skipToEnd();
-        return "comment";
+        return 'comment';
       }
     }
     if (isOperatorChar.test(ch)) {
       stream.eatWhile(isOperatorChar);
-      return "operator";
+      return 'operator';
     }
     stream.eatWhile(/[\w\$_]/);
     var cur = stream.current();
     if (keywords.propertyIsEnumerable(cur)) {
-      if (blockKeywords.propertyIsEnumerable(cur)) curPunc = "newstatement";
-      return "keyword";
+      if (blockKeywords.propertyIsEnumerable(cur)) curPunc = 'newstatement';
+      return 'keyword';
     }
-    if (atoms.propertyIsEnumerable(cur)) return "atom";
-    return "word";
+    if (atoms.propertyIsEnumerable(cur)) return 'atom';
+    return 'word';
   }
 
   function tokenString(quote) {
@@ -66,24 +62,12 @@ CodeMirror.defineMode("tortoise", function(config, parserConfig) {
       var escaped = false, next, end = false;
       while ((next = stream.next()) != null) {
         if (next == quote && !escaped) {end = true; break;}
-        escaped = !escaped && next == "\\";
+        escaped = !escaped && next == '\\';
       }
       if (end || !(escaped || multiLineStrings))
         state.tokenize = null;
-      return "string";
+      return 'string';
     };
-  }
-
-  function tokenComment(stream, state) {
-    var maybeEnd = false, ch;
-    while (ch = stream.next()) {
-      if (ch == "/" && maybeEnd) {
-        state.tokenize = null;
-        break;
-      }
-      maybeEnd = (ch == "*");
-    }
-    return "comment";
   }
 
   function Context(indented, column, type, align, prev) {
@@ -98,7 +82,7 @@ CodeMirror.defineMode("tortoise", function(config, parserConfig) {
   }
   function popContext(state) {
     var t = state.context.type;
-    if (t == ")" || t == "]" || t == "}")
+    if (t == ')' || t == ']' || t == '}')
       state.indented = state.context.indented;
     return state.context = state.context.prev;
   }
@@ -109,7 +93,7 @@ CodeMirror.defineMode("tortoise", function(config, parserConfig) {
     startState: function(basecolumn) {
       return {
         tokenize: null,
-        context: new Context((basecolumn || 0) - indentUnit, 0, "top", false),
+        context: new Context((basecolumn || 0) - indentUnit, 0, 'top', false),
         indented: 0,
         startOfLine: true
       };
@@ -125,21 +109,21 @@ CodeMirror.defineMode("tortoise", function(config, parserConfig) {
       if (stream.eatSpace()) return null;
       curPunc = null;
       var style = (state.tokenize || tokenBase)(stream, state);
-      if (style == "comment" || style == "meta") return style;
+      if (style == 'comment' || style == 'meta') return style;
       if (ctx.align == null) ctx.align = true;
 
-      if ((curPunc == ";" || curPunc == ":") && ctx.type == "statement") popContext(state);
-      else if (curPunc == "{") pushContext(state, stream.column(), "}");
-      else if (curPunc == "[") pushContext(state, stream.column(), "]");
-      else if (curPunc == "(") pushContext(state, stream.column(), ")");
-      else if (curPunc == "}") {
-        while (ctx.type == "statement") ctx = popContext(state);
-        if (ctx.type == "}") ctx = popContext(state);
-        while (ctx.type == "statement") ctx = popContext(state);
+      if ((curPunc == ';' || curPunc == ':') && ctx.type == 'statement') popContext(state);
+      else if (curPunc == '{') pushContext(state, stream.column(), '}');
+      else if (curPunc == '[') pushContext(state, stream.column(), ']');
+      else if (curPunc == '(') pushContext(state, stream.column(), ')');
+      else if (curPunc == '}') {
+        while (ctx.type == 'statement') ctx = popContext(state);
+        if (ctx.type == '}') ctx = popContext(state);
+        while (ctx.type == 'statement') ctx = popContext(state);
       }
       else if (curPunc == ctx.type) popContext(state);
-      else if (ctx.type == "}" || ctx.type == "top" || (ctx.type == "statement" && curPunc == "newstatement"))
-        pushContext(state, stream.column(), "statement");
+      else if (ctx.type == '}' || ctx.type == 'top' || (ctx.type == 'statement' && curPunc == 'newstatement'))
+        pushContext(state, stream.column(), 'statement');
       state.startOfLine = false;
       return style;
     },
@@ -147,15 +131,15 @@ CodeMirror.defineMode("tortoise", function(config, parserConfig) {
     indent: function(state, textAfter) {
       if (state.tokenize != tokenBase && state.tokenize != null) return 0;
       var ctx = state.context, firstChar = textAfter && textAfter.charAt(0);
-      if (ctx.type == "statement" && firstChar == "}") ctx = ctx.prev;
+      if (ctx.type == 'statement' && firstChar == '}') ctx = ctx.prev;
       var closing = firstChar == ctx.type;
-      if (ctx.type == "statement") return ctx.indented + (firstChar == "{" ? 0 : indentUnit);
+      if (ctx.type == 'statement') return ctx.indented + (firstChar == '{' ? 0 : indentUnit);
       else if (ctx.align) return ctx.column + (closing ? 0 : 1);
       else return ctx.indented + (closing ? 0 : indentUnit);
     },
 
-    electricChars: "{}"
+    electricChars: '{}'
   };
 });
 
-CodeMirror.defineMIME("text/tortoise", "tortoise");
+CodeMirror.defineMIME('text/tortoise', 'tortoise');

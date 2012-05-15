@@ -14,7 +14,7 @@ Turtle.prototype.clear = function () {
     this.angle = 90;
     this.width = 4;
     this.opacity = 1.0;
-    this.color = '#00f';
+    this.color = '#0000ff';
     this.pen = true;
     this.turtleimg = undefined;
     this.updateTurtle();

@@ -30,13 +30,20 @@ tortoise = (function (undefined) {
 
     var lookupBinding = function (env, v) {
         if (!env) throw('Variable not defined: ' + v);
-        if (v in env.bindings) return env.bindings[v];
+        if (v in env.bindings) {
+			var tmp = env.bindings[v];
+
+			return typeof tmp === 'function' ? tmp : +tmp;
+		}
         return lookupBinding(env.outer, v);
     };
 
     var updateBinding = function (env, v, val) {
         if (!env) throw('Symbol not defined: ' + v);
-        if (v in env.bindings) return env.bindings[v] = val;
+        if (v in env.bindings) {
+			if (typeof env.bindings[v] !== typeof val) throw('Cannot update symbol: ' + v);
+			return env.bindings[v] = val;
+		}
         return updateBinding(env.outer, v, val);
     };
 
@@ -62,6 +69,8 @@ tortoise = (function (undefined) {
     };
 
     var evalStatement = function (stmt, env) {
+		var tmp, tmp2, i;
+	
         switch(stmt.tag) {
             // A single expression
             case 'ignore':
@@ -73,17 +82,23 @@ tortoise = (function (undefined) {
                 addBinding(env, stmt.name, tmp);
                 return tmp;
 
+            // Const declaration
+            case 'const':
+                tmp = stmt.body ? evalExpr(stmt.body, env) : 0;
+                addBinding(env, stmt.name, '' + tmp);
+                return tmp;
+
             // Function declaration
             case 'define':
+				tmp = stmt.args;
                 addBinding(env, stmt.name, function () {
-                    var args = stmt.args;
                     var newEnv = {
                         outer: env,
                         bindings: { }
                     };
                     var result;
 
-                    for (i = 0; i < args.length; ++i) newEnv.bindings[args[i]] = arguments[i];
+                    for (i = 0; i < tmp.length; ++i) newEnv.bindings[tmp[i]] = arguments[i];
                     result = evalStatements(stmt.body, newEnv);
                     return isArray(result) && result[0] === breaker ? result[1] : result;
                 });
@@ -91,7 +106,6 @@ tortoise = (function (undefined) {
 
             // Assignment
             case ':=':
-                // Evaluate right hand side
                 return updateBinding(env, stmt.left, evalExpr(stmt.right, env));
 
             // If/Else
@@ -111,12 +125,17 @@ tortoise = (function (undefined) {
             case 'repeat':
                 tmp = evalExpr(stmt.expr, env);
                 if (tmp > 0) {
-                    tmp2 = evalStatements(stmt.body, env);
-                    while (--tmp) evalStatements(stmt.body, env);
+					for (i = 1; i < tmp; ++i) tmp2 = evalStatements(stmt.body, env);
                 }
                 else {
                     tmp2 = undefined;
                 }
+                return tmp2;
+
+            // While
+            case 'while':
+				tmp2 = undefined;
+				while (evalExpr(stmt.expr, env)) tmp2 = evalStatements(stmt.body, env);
                 return tmp2;
 
             // Return

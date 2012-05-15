@@ -2,8 +2,10 @@ Assignment for lesson 6 of PL101 at http://www.nathansuniversity.com/.
 
 Tortoise interpreter with lots of goodies:
 
-* if (<cond>) <if_true> else <if_false>;
+* if (<cond>) <if_true> else <if_false>
+* while (<cond>) <block>
 * return <optional_expr>;
+* numbers can have exponent, so now 31.41592e-1 is a valid format for numbers
 * ternary inline-if operator: <cond> ? <if_true> : <if_false>
 * ternary "chained" comparison operators: x < y < z is equivalent to
   x < y && y < z, but y is evaluated only once. Valid for all comparison
@@ -16,15 +18,22 @@ Tortoise interpreter with lots of goodies:
 * power operator <base> ** <exp> (right-associative)
 * alternate numeric format: #rrggbb or #rgb. Useful to set the color
   of the pen through the pen_color function.
-* turtle functions: forward, left, right, set_heading, home, clear, pen_up,
-  pen_down, set_color.
+* C-like single line comments: // comment
+* turtle functions: forward, backward, left, right, set_heading, get_heading,
+  set_position, get_position_x, get_position_y, home, clear, pen_up, pen_down,
+  is_pen_down, set_ink, get_ink, set_paper, get_paper, set_pen_width,
+  get_pen_width, set_pen_opacity, get_pen_opacity.
 * math functions: abs, ceil, floor, round, log, exp, sqrt, pow, min, max,
-  sin, cos, tan, asin, acos, atan, atan2
+  sin, cos, tan, asin, acos, atan, atan2 (trig functions work with degrees)
+* math constants: e, pi
 * C-like assign operators: += -= *= /= %= **= ||= &&=
-* optimized parser using not-predicates (the sample was too slow)
+* optimized my parser using not-predicates to prevent excessive backtracking
+  (the sample was too slow)
 * corrected associativity of additive and multiplicative operators (they are
   left-associative, and in the sample they are right-associative)
 * C-like convention regarding truth values: zero is false, anything else is
   true. The boolean not operator converts 0 to 1, and nonzero to 0.
 * declaration and initialization through the extended syntax: var <id> := <expr>;
-* custom CodeMirror-based syntax highlighter for Tortoise.
+* constant declaration similar to var declaration with initialization, which
+  is mandatory for constants: const <id> := <expr>;
+* custom CodeMirror-based syntax highlighter for Tortoise

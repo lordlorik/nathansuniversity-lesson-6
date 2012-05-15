@@ -185,8 +185,12 @@ statement
         { return { tag: 'define', name: v, args: args || [], body: body }; }
     / "var" ws1 v: identifier ws init: initialization_part? ";" ws
         { return { tag: 'var', name: v, body: init }; }
+    / "const" ws1 v: identifier ws init: initialization_part ";" ws
+        { return { tag: 'const', name: v, body: init }; }
     / "if" ws "(" ws expr: expression ")" ws body: block elseBody: else_part?
         { return { tag: 'if', expr: expr, body: body, body2: elseBody }; }
+    / "while" ws "(" ws expr: expression ")" ws body: block
+        { return { tag: 'while', expr: expr, body: body }; }
     / "repeat" ws "(" ws expr: expression ")" ws body: block
         { return { tag: 'repeat', expr: expr, body: body }; }
     / "return" !rest_id_char expr: expression? ";" ws
