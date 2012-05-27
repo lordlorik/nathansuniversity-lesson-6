@@ -207,7 +207,7 @@ tortoise = (function (undefined) {
                 return evalExpr(expr.left, env) === evalExpr(expr.right, env) ? 1 : 0;
 
             case '!=':
-                return evalExpr(expr.left, env) === evalExpr(expr.right, env) ? 1 : 0;
+                return evalExpr(expr.left, env) !== evalExpr(expr.right, env) ? 1 : 0;
 
             case '<':
                 return evalExpr(expr.left, env) < evalExpr(expr.right, env) ? 1 : 0;
