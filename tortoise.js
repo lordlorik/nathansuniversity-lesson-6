@@ -159,7 +159,7 @@ tortoise = (function (undefined) {
             case 'ident':
                 tmp = lookupBinding(env, expr.name);
                 if (typeof tmp === 'function') throw('Variable expected: ' + expr.name);
-                return tmp;
+                return +tmp;
 
             case 'call':
                 tmp = lookupBinding(env, expr.name);
