@@ -1,12 +1,7 @@
 tortoise = (function (undefined) {
     var breaker = {};
 
-    var builtinFunctions = {
-        'alert': function (msg) {
-            alert(msg);
-            return msg;
-        }
-    };
+    var builtinFunctions = { };
 
     var isArray = function (obj) {
         return obj && obj instanceof Array;
@@ -29,21 +24,21 @@ tortoise = (function (undefined) {
     };
 
     var lookupBinding = function (env, v) {
-        if (!env) throw('Variable not defined: ' + v);
+        if (!env) throw('Symbol not defined: ' + v);
         if (v in env.bindings) {
-			var tmp = env.bindings[v];
+            var tmp = env.bindings[v];
 
-			return typeof tmp === 'function' ? tmp : +tmp;
-		}
+            return typeof tmp === 'function' ? tmp : +tmp;
+        }
         return lookupBinding(env.outer, v);
     };
 
     var updateBinding = function (env, v, val) {
         if (!env) throw('Symbol not defined: ' + v);
         if (v in env.bindings) {
-			if (typeof env.bindings[v] !== typeof val) throw('Cannot update symbol: ' + v);
-			return env.bindings[v] = val;
-		}
+            if (typeof env.bindings[v] !== typeof val) throw('Cannot update symbol: ' + v);
+            return env.bindings[v] = val;
+        }
         return updateBinding(env.outer, v, val);
     };
 
@@ -69,8 +64,8 @@ tortoise = (function (undefined) {
     };
 
     var evalStatement = function (stmt, env) {
-		var tmp, tmp2, i;
-	
+        var tmp, tmp2, i;
+
         switch(stmt.tag) {
             // A single expression
             case 'ignore':
@@ -90,7 +85,7 @@ tortoise = (function (undefined) {
 
             // Function declaration
             case 'define':
-				tmp = stmt.args;
+                tmp = stmt.args;
                 addBinding(env, stmt.name, function () {
                     var newEnv = {
                         outer: env,
@@ -98,6 +93,7 @@ tortoise = (function (undefined) {
                     };
                     var result;
 
+                    if (tmp.length !== arguments.length) throw('Function \'' + stmt.name + '\' needs exactly ' + tmp.length + ' arguments');
                     for (i = 0; i < tmp.length; ++i) newEnv.bindings[tmp[i]] = arguments[i];
                     result = evalStatements(stmt.body, newEnv);
                     return isArray(result) && result[0] === breaker ? result[1] : result;
@@ -125,7 +121,7 @@ tortoise = (function (undefined) {
             case 'repeat':
                 tmp = evalExpr(stmt.expr, env);
                 if (tmp > 0) {
-					for (i = 1; i < tmp; ++i) tmp2 = evalStatements(stmt.body, env);
+                    for (i = 1; i < tmp; ++i) tmp2 = evalStatements(stmt.body, env);
                 }
                 else {
                     tmp2 = undefined;
@@ -134,8 +130,8 @@ tortoise = (function (undefined) {
 
             // While
             case 'while':
-				tmp2 = undefined;
-				while (evalExpr(stmt.expr, env)) tmp2 = evalStatements(stmt.body, env);
+                tmp2 = undefined;
+                while (evalExpr(stmt.expr, env)) tmp2 = evalStatements(stmt.body, env);
                 return tmp2;
 
             // Return
@@ -266,6 +262,32 @@ tortoise = (function (undefined) {
         }
     };
 
+    var radToDeg = Math.PI / 180;
+
+    addBindingExt('alert', typeof alert == 'undefined' ? console.log : alert);
+
+    addBindingExt('PI', '' + Math.PI);
+    addBindingExt('E', '' + Math.E);
+
+    addBindingExt('sin', function (a) { return Math.sin(a * radToDeg); });
+    addBindingExt('cos', function (a) { return Math.cos(a * radToDeg); });
+    addBindingExt('tan', function (a) { return Math.tan(a * radToDeg); });
+    addBindingExt('asin', function (n) { return Math.asin(n) / radToDeg; });
+    addBindingExt('acos', function (n) { return Math.acos(n) / radToDeg; });
+    addBindingExt('atan', function (n) { return Math.atan(n) * radToDeg; });
+    addBindingExt('atan2', function (x, y) { return Math.atan2(x, y) * radToDeg; });
+
+    addBindingExt('abs', Math.abs);
+    addBindingExt('ceil', Math.ceil);
+    addBindingExt('floor', Math.floor);
+    addBindingExt('round', Math.round);
+    addBindingExt('log', Math.log);
+    addBindingExt('exp', Math.exp);
+    addBindingExt('sqrt', Math.sqrt);
+    addBindingExt('pow', Math.pow);
+    addBindingExt('min', Math.min);
+    addBindingExt('max', Math.max);
+	
     return {
         eval: eval,
         evalTortoise: evalTortoise,
