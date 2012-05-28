@@ -85,31 +85,8 @@ polygon(3, radius, #a0a);
         });
 
         var myTurtle = new Turtle('turtlecanvas');
-        var radToDeg = Math.PI / 180;
         var colorToArray = function (c) { return [(c >> 16) & 255, (c >> 8) & 255, c & 255]; };
         var paper = '#ffffff';
-
-        tortoise.addBinding('PI', '' + Math.PI);
-        tortoise.addBinding('E', '' + Math.E);
-
-        tortoise.addBinding('sin', function (a) { return Math.sin(a * radToDeg); });
-        tortoise.addBinding('cos', function (a) { return Math.cos(a * radToDeg); });
-        tortoise.addBinding('tan', function (a) { return Math.tan(a * radToDeg); });
-        tortoise.addBinding('asin', function (n) { return Math.asin(n) / radToDeg; });
-        tortoise.addBinding('acos', function (n) { return Math.acos(n) / radToDeg; });
-        tortoise.addBinding('atan', function (n) { return Math.atan(n) * radToDeg; });
-        tortoise.addBinding('atan2', function (x, y) { return Math.atan2(x, y) * radToDeg; });
-
-        tortoise.addBinding('abs', Math.abs);
-        tortoise.addBinding('ceil', Math.ceil);
-        tortoise.addBinding('floor', Math.floor);
-        tortoise.addBinding('round', Math.round);
-        tortoise.addBinding('log', Math.log);
-        tortoise.addBinding('exp', Math.exp);
-        tortoise.addBinding('sqrt', Math.sqrt);
-        tortoise.addBinding('pow', Math.pow);
-        tortoise.addBinding('min', Math.min);
-        tortoise.addBinding('max', Math.max);
 
         tortoise.addBinding('forward', function (d) { myTurtle.forward(d); });
         tortoise.addBinding('backward', function (d) { myTurtle.forward(-d); });
